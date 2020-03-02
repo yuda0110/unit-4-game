@@ -41,6 +41,7 @@ h3 {
 }
 
 h1 {
+    margin-bottom: 2rem;
     font-size: 5rem;
     font-weight: bold;
     line-height: 1.2;
@@ -64,7 +65,29 @@ section {
 }
 
 .character-holder {
-    padding: 3rem;
+    padding: 3rem 0;
+    display: flex;
+}
+
+.character-panel {
+    width: 15rem;
+    padding: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.5);
+}
+
+.character-panel:not(:last-child) {
+    margin-right: 2rem;
+}
+.character-panel p {
+    line-height: 1;
+}
+
+.character-panel img {
+    width: 100%;
+    margin: .5rem 0;
+    display: block;
 }
 
 .btn-attack {

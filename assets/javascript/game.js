@@ -39,7 +39,7 @@ const charactersArray = [obiWan, luke, maul, sidious];
 function createCharPanels() {
   let content = '';
   charactersArray.forEach(function (char, index) {
-    content += `<div id="char${index + 1}" class="char-panel">
+    content += `<div id="char${index + 1}" class="character-panel">
       <p>${char.myName}</p>
       <img src="${char.myImage}" alt="${char.myName}">
       <p>${char.myHealthPoints}</p>
