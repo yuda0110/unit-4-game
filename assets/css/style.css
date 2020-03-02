@@ -1,0 +1,94 @@
+/* ========== VARIABLES ========== */
+:root {
+    --color-red: #cb1214;
+    --color-blue: #3877cb;
+    --color-white: #fff;
+    --color-black: #090909;
+
+    --font-heading: "Georgia", Times, Times New Roman, serif;
+    --font-default: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+/* ========== COMMON ========== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 50%; /* 8px/16px = 50% -> 1rem = 8px */
+}
+
+body {
+    font-family: var(--font-default);
+    min-height: 100vh;
+    line-height: 1.6;
+    color: var(--color-black);
+    position: relative;
+    font-size: 1.6rem;
+}
+
+
+/* ========== HEADINGS ========== */
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+}
+
+h1 {
+    font-size: 5rem;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 3rem;
+    text-transform: capitalize;
+}
+
+/* ========== MAIN CONTENTS ========== */
+.container {
+    width: calc(100% - 6rem);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 3rem;
+}
+
+section {
+    margin-bottom: 3rem;
+}
+
+.character-holder {
+    padding: 3rem;
+}
+
+.btn-attack {
+    padding: .5rem 1rem;
+    font-size: 2rem;
+    color: var(--color-white);
+    border-radius: .5rem;
+    background-color: var(--color-blue);
+    transition: background-color .3s;
+    cursor: pointer;
+}
+
+.btn-attack:hover,
+.btn-attack:focus {
+    background-color: var(--color-red);
+}
+
+@media screen and (min-width: 641px) {
+    /* width: 641px to 768px */
+    html {
+        font-size: 62.5%; /* 10px/16px = 62.5% -> 1rem = 10px */
+    }
+
+    .container {
+        padding: 5rem;
+    }
+}
