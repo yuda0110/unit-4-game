@@ -64,6 +64,14 @@ function createCharPanels() {
   htmlEl.yourCharHolder.html(content);
 }
 
+function findCharInstance(id) {
+  console.log('id: ' + id);
+
+  return charactersArray.find(function(char) {
+    return char.returnSelf(id) !== undefined;
+  });
+}
+
 $('document').ready(function() {
 
   createCharPanels();
@@ -114,16 +122,11 @@ $('document').ready(function() {
 
     console.log('defenderID: ' + defenderId);
 
-    let defender = '';
-    charactersArray.forEach(function(char) {
-      let tmpDefender = char.returnSelf(defenderId);
-      if (tmpDefender) {
-        defender = tmpDefender;
-      }
-    });
+    const defender = findCharInstance(defenderId);
+    const yourChar = findCharInstance(yourCharId);
 
-    $('#points').html(`<p>You attacked ${defender.myName} for ? damage.<br>
-        ${defender.myName} attacked you back for ? damage.</p>`);
+    $('#points').html(`<p>You attacked ${defender.myName} for ${yourChar.myAttackPower} damage.<br>
+        ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.</p>`);
   });
 
 });
