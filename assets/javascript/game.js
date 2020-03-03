@@ -58,22 +58,31 @@ $('document').ready(function() {
   let enemyChosen = false;
 
   const charPanelEl = {
-    yourCharPanel: $('#your-character .character-panel')
+    yourCharPanels: $('#your-character .character-panel')
   };
 
-  console.log(htmlEl.yourCharHolder)
-  console.log(charPanelEl.yourCharPanel)
+  console.log(htmlEl.yourCharHolder);
+  console.log(charPanelEl.yourCharPanels);
 
-  charPanelEl.yourCharPanel.on('click', function() {
+  charPanelEl.yourCharPanels.on('click', function(e) {
     if (enemyChosen) {
       return;
     }
 
     enemyChosen = true;
     const clickedPanel = $(this);
-    console.log('clickedPanel' + clickedPanel);
-    clickedPanel.remove();
-    htmlEl.enemiesHolder.append(clickedPanel);
+    const clickedPanelId = clickedPanel.attr('id');
+    console.log('clickedPanel: ' + clickedPanelId);
+    charPanelEl.yourCharPanels.each(function (index) {
+      console.log('id: ' + $(this).attr('id'));
+      if (clickedPanelId !== $(this).attr('id')) {
+        $(this).remove();
+        htmlEl.enemiesHolder.append($(this))
+      }
+    });
+
+    // clickedPanel.remove();
+    // htmlEl.enemiesHolder.append(clickedPanel);
   })
 })
 
