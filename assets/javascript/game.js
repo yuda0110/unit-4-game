@@ -30,7 +30,8 @@ class Character {
 
 const htmlEl = {
   yourCharHolder: $('#your-character .character-holder'),
-  enemiesHolder: $('#enemies .character-holder')
+  enemiesHolder: $('#enemies .character-holder'),
+  defenderHolder: $('#defender .character-holder')
 };
 
 const imgPath = './assets/images/';
@@ -53,18 +54,15 @@ function createCharPanels() {
 }
 
 $('document').ready(function() {
+
   createCharPanels();
 
   let enemyChosen = false;
+  let defenderChosen = false;
 
-  const charPanelEl = {
-    yourCharPanels: $('#your-character .character-panel')
-  };
+  const yourCharPanels = $('#your-character .character-panel');
 
-  console.log(htmlEl.yourCharHolder);
-  console.log(charPanelEl.yourCharPanels);
-
-  charPanelEl.yourCharPanels.on('click', function(e) {
+  yourCharPanels.on('click', function() {
     if (enemyChosen) {
       return;
     }
@@ -73,18 +71,29 @@ $('document').ready(function() {
     const clickedPanel = $(this);
     const clickedPanelId = clickedPanel.attr('id');
     console.log('clickedPanel: ' + clickedPanelId);
-    charPanelEl.yourCharPanels.each(function (index) {
+    yourCharPanels.each(function (index) {
       console.log('id: ' + $(this).attr('id'));
       if (clickedPanelId !== $(this).attr('id')) {
         $(this).remove();
         htmlEl.enemiesHolder.append($(this))
       }
     });
+  });
 
-    // clickedPanel.remove();
-    // htmlEl.enemiesHolder.append(clickedPanel);
-  })
-})
+  $(document).on("click", "#enemies .character-panel", function(){
+    console.log($('#enemies .character-panel'));
+    if (defenderChosen) {
+      return;
+    }
+
+    defenderChosen = true;
+    const clickedPanel = $(this);
+    console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
+    clickedPanel.remove();
+    htmlEl.defenderHolder.append(clickedPanel);
+  });
+
+});
 
 
 
