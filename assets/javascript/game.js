@@ -1,10 +1,15 @@
 class Character {
-  constructor(name, healthPoints, attackPower, counterAttackPower, image) {
+  constructor(id, name, healthPoints, attackPower, counterAttackPower, image) {
+    this.id = id;
     this.name = name;
     this.healthPoints = parseInt(healthPoints);
     this.attackPower = parseInt(attackPower);
     this.counterAttackPower = parseInt(counterAttackPower);
     this.image = image;
+  }
+
+  get myId() {
+    return this.id;
   }
 
   get myName() {
@@ -26,6 +31,12 @@ class Character {
   get myImage() {
     return this.image;
   }
+
+  returnSelf(id) {
+    if (this.id === id) {
+      return this
+    }
+  }
 }
 
 const htmlEl = {
@@ -35,16 +46,16 @@ const htmlEl = {
 };
 
 const imgPath = './assets/images/';
-const obiWan = new Character('Obi-Wan Kenobi', 120, 8, 25, `${imgPath}obi-wan.jpg`);
-const luke = new Character('Luke Skywalker', 100, 6, 25, `${imgPath}luke-skywalker.jpg`);
-const maul = new Character('Darth Maul', 180, 10, 25, `${imgPath}darth-maul.jpg`);
-const sidious = new Character('Darth Sidious', 150, 4, 25, `${imgPath}darth-sidious.jpg`);
+const obiWan = new Character('obiWan', 'Obi-Wan Kenobi', 120, 8, 25, `${imgPath}obi-wan.jpg`);
+const luke = new Character('luke', 'Luke Skywalker', 100, 6, 25, `${imgPath}luke-skywalker.jpg`);
+const maul = new Character('maul', 'Darth Maul', 180, 10, 25, `${imgPath}darth-maul.jpg`);
+const sidious = new Character('sidious', 'Darth Sidious', 150, 4, 25, `${imgPath}darth-sidious.jpg`);
 const charactersArray = [obiWan, luke, maul, sidious];
 
 function createCharPanels() {
   let content = '';
   charactersArray.forEach(function (char, index) {
-    content += `<div id="char${index + 1}" class="character-panel">
+    content += `<div id=${char.myId} class="character-panel">
       <p>${char.myName}</p>
       <img src="${char.myImage}" alt="${char.myName}">
       <p>${char.myHealthPoints}</p>
@@ -59,6 +70,8 @@ $('document').ready(function() {
 
   let enemyChosen = false;
   let defenderChosen = false;
+  let yourCharId = '';
+  let defenderId = '';
 
   const yourCharPanels = $('#your-character .character-panel');
 
@@ -69,18 +82,18 @@ $('document').ready(function() {
 
     enemyChosen = true;
     const clickedPanel = $(this);
-    const clickedPanelId = clickedPanel.attr('id');
-    console.log('clickedPanel: ' + clickedPanelId);
+    yourCharId = clickedPanel.attr('id');
+    console.log('clickedPanel: ' + yourCharId);
     yourCharPanels.each(function (index) {
       console.log('id: ' + $(this).attr('id'));
-      if (clickedPanelId !== $(this).attr('id')) {
+      if (yourCharId !== $(this).attr('id')) {
         $(this).remove();
         htmlEl.enemiesHolder.append($(this))
       }
     });
   });
 
-  $(document).on("click", "#enemies .character-panel", function(){
+  $(document).on('click', '#enemies .character-panel', function(){
     console.log($('#enemies .character-panel'));
     if (defenderChosen) {
       return;
@@ -88,9 +101,29 @@ $('document').ready(function() {
 
     defenderChosen = true;
     const clickedPanel = $(this);
+    defenderId = clickedPanel.attr('id');
     console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
     clickedPanel.remove();
     htmlEl.defenderHolder.append(clickedPanel);
+  });
+
+  $('#attack').on('click', function() {
+    if (!defenderChosen) {
+      return;
+    }
+
+    console.log('defenderID: ' + defenderId);
+
+    let defender = '';
+    charactersArray.forEach(function(char) {
+      let tmpDefender = char.returnSelf(defenderId);
+      if (tmpDefender) {
+        defender = tmpDefender;
+      }
+    });
+
+    $('#points').html(`<p>You attacked ${defender.myName} for ? damage.<br>
+        ${defender.myName} attacked you back for ? damage.</p>`);
   });
 
 });
