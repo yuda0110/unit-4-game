@@ -20,9 +20,9 @@ class Character {
     return this.healthPoints;
   }
 
-  get myAttackPower() {
-    return this.attackPower;
-  }
+  // get myAttackPower() {
+  //   return this.attackPower;
+  // }
 
   get myCounterAttackPower() {
     return this.counterAttackPower;
@@ -34,7 +34,41 @@ class Character {
 
   returnSelf(id) {
     if (this.id === id) {
-      return this
+      return this;
+    }
+  }
+
+  updateAttackPower(attackCount) {
+    return this.attackPower * attackCount;
+  }
+
+  updateYourCharHP(attackCount) {
+    if (attackCount > 0) {
+      console.log('this.counterAttackPower:' + this.counterAttackPower);
+      console.log('this.healthPoints1:' + this.healthPoints);
+
+      this.healthPoints -= this.counterAttackPower;
+
+      console.log('this.healthPoints2:' + this.healthPoints);
+
+      return this.healthPoints;
+    } else {
+      return this.healthPoints;
+    }
+  }
+
+  updateDefenderHP(attackCount, yourCharPower) {
+    if (attackCount > 0) {
+      console.log('yourCharPower:' + yourCharPower);
+      console.log('defender healthPoints1:' + this.healthPoints);
+
+      this.healthPoints -= yourCharPower;
+
+      console.log('defender healthPoints2:' + this.healthPoints);
+
+      return this.healthPoints;
+    } else {
+      return this.healthPoints;
     }
   }
 }
@@ -58,7 +92,7 @@ function createCharPanels() {
     content += `<div id=${char.myId} class="character-panel">
       <p>${char.myName}</p>
       <img src="${char.myImage}" alt="${char.myName}">
-      <p>${char.myHealthPoints}</p>
+      <p class="hp-points">${char.myHealthPoints}</p>
       </div>`;
   });
   htmlEl.yourCharHolder.html(content);
@@ -80,6 +114,7 @@ $('document').ready(function() {
   let defenderChosen = false;
   let yourCharId = '';
   let defenderId = '';
+  let attackCounter = 0;
 
   const yourCharPanels = $('#your-character .character-panel');
 
@@ -121,11 +156,18 @@ $('document').ready(function() {
     }
 
     console.log('defenderID: ' + defenderId);
+    console.log('yourCharID: ' + yourCharId);
+    attackCounter += 1;
+    console.log('attackCount: ' + attackCounter);
 
     const defender = findCharInstance(defenderId);
     const yourChar = findCharInstance(yourCharId);
+    const yourCharPower = yourChar.updateAttackPower(attackCounter);
 
-    $('#points').html(`<p>You attacked ${defender.myName} for ${yourChar.myAttackPower} damage.<br>
+    $(`#your-character #${yourCharId} .hp-points`).text(`${yourChar.updateYourCharHP(attackCounter)}`);
+    $(`#defender #${defenderId} .hp-points`).text(`${defender.updateDefenderHP(attackCounter, yourCharPower)}`);
+
+    $('#points').html(`<p>You attacked ${defender.myName} for ${yourCharPower} damage.<br>
         ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.</p>`);
   });
 
