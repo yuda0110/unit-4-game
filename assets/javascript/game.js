@@ -1,9 +1,9 @@
 class Character {
-  constructor(id, name, healthPoints, attackPower, counterAttackPower, image) {
+  constructor(id, name, healthPoints, baseAttackPower, counterAttackPower, image) {
     this.id = id;
     this.name = name;
     this.healthPoints = parseInt(healthPoints);
-    this.attackPower = parseInt(attackPower);
+    this.baseAttackPower = parseInt(baseAttackPower);
     this.counterAttackPower = parseInt(counterAttackPower);
     this.image = image;
   }
@@ -20,10 +20,6 @@ class Character {
     return this.healthPoints;
   }
 
-  // get myAttackPower() {
-  //   return this.attackPower;
-  // }
-
   get myCounterAttackPower() {
     return this.counterAttackPower;
   }
@@ -39,7 +35,7 @@ class Character {
   }
 
   updateAttackPower(attackCount) {
-    return this.attackPower * attackCount;
+    return this.baseAttackPower * attackCount;
   }
 
   updateYourCharHP(attackCount) {
@@ -110,8 +106,9 @@ $('document').ready(function() {
 
   createCharPanels();
 
-  let enemyChosen = false;
+  let enemiesChosen = false;
   let defenderChosen = false;
+  let gameOver = false;
   let yourCharId = '';
   let defenderId = '';
   let attackCounter = 0;
@@ -119,11 +116,11 @@ $('document').ready(function() {
   const yourCharPanels = $('#your-character .character-panel');
 
   yourCharPanels.on('click', function() {
-    if (enemyChosen) {
+    if (enemiesChosen) {
       return;
     }
 
-    enemyChosen = true;
+    enemiesChosen = true;
     const clickedPanel = $(this);
     yourCharId = clickedPanel.attr('id');
     console.log('clickedPanel: ' + yourCharId);
@@ -151,7 +148,7 @@ $('document').ready(function() {
   });
 
   $('#attack').on('click', function() {
-    if (!defenderChosen) {
+    if (!defenderChosen || gameOver) {
       return;
     }
 
@@ -163,12 +160,26 @@ $('document').ready(function() {
     const defender = findCharInstance(defenderId);
     const yourChar = findCharInstance(yourCharId);
     const yourCharPower = yourChar.updateAttackPower(attackCounter);
+    const defenderHP = defender.updateDefenderHP(attackCounter, yourCharPower);
+    const yourCharHP = yourChar.updateYourCharHP(attackCounter);
 
-    $(`#your-character #${yourCharId} .hp-points`).text(`${yourChar.updateYourCharHP(attackCounter)}`);
-    $(`#defender #${defenderId} .hp-points`).text(`${defender.updateDefenderHP(attackCounter, yourCharPower)}`);
+    $(`#your-character #${yourCharId} .hp-points`).text(`${yourCharHP}`);
+    $(`#defender #${defenderId} .hp-points`).text(`${defenderHP}`);
 
-    $('#points').html(`<p>You attacked ${defender.myName} for ${yourCharPower} damage.<br>
+    if (defenderHP > 0 && yourCharHP > 0) {
+      $('#points').html(`<p>You attacked ${defender.myName} for ${yourCharPower} damage.<br>
         ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.</p>`);
+    } else if (defenderHP > 0 && yourCharHP <0) { // When your Character LOSES.
+      gameOver = true;
+      $('#points').html(`<p>You have been defeated...GAME OVER!!!</p>`);
+    } else if (defenderHP < 0 && yourCharHP > 0) { // When your Character WINS.
+      defenderChosen = false;
+      $('#points').html(`<p>You have defeated ${defender.myName}, you can choose to fight another enemy.</p>`);
+      $('#defender .character-panel').remove();
+    } else {
+      $('#points').html('<p>It\'s a tie!</p>'); // When the game is a tie.
+    }
+
   });
 
 });
