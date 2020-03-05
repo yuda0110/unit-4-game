@@ -174,13 +174,18 @@ $('document').ready(function() {
     gameState = gameStateFactory();
 
     createCharPanels();
+
+    $('#enemies .character-holder').empty();
+    $('#defender .character-holder').empty();
+    $('#messages .message').empty();
+    $('#restart').hide();
   }
 
   resetGame();
 
   const yourCharPanels = $('#your-character .character-panel');
 
-  yourCharPanels.on('click', function() {
+  $(document).on('click', '#your-character .character-panel', function(){
     if (gameState.enemiesChosen) {
       return;
     }
@@ -190,7 +195,7 @@ $('document').ready(function() {
     gameState.yourCharId = clickedPanel.attr('id');
     console.log('clickedPanel: ' + gameState.yourCharId);
 
-    yourCharPanels.each(function (index) {
+    $('#your-character .character-panel').each(function (index) {
       console.log('id: ' + $(this).attr('id'));
       if (gameState.yourCharId !== $(this).attr('id')) {
         $(this).remove();
