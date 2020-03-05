@@ -1,7 +1,9 @@
 /* ========== VARIABLES ========== */
 :root {
     --color-red: #cb1214;
-    --color-blue: #3877cb;
+    --color-red-light: #f5494c;
+    --color-blue: #1259b5;
+    --color-blue-light: #4898ff;
     --color-white: #fff;
     --color-black: #090909;
 
@@ -91,19 +93,33 @@ section {
     display: block;
 }
 
-.btn-attack {
+.btn {
+    margin-top: .5rem;
     padding: .5rem 1rem;
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: var(--color-white);
     border-radius: .5rem;
-    background-color: var(--color-blue);
     transition: background-color .3s;
     cursor: pointer;
 }
 
+.btn-attack {
+    background-color: var(--color-red);
+}
+
 .btn-attack:hover,
 .btn-attack:focus {
-    background-color: var(--color-red);
+    background-color: var(--color-red-light);
+}
+
+.btn-restart {
+    display: none;
+    background-color: var(--color-blue);
+}
+
+.btn-restart:hover,
+.btn-restart:focus {
+    background-color: var(--color-blue-light);
 }
 
 @media screen and (min-width: 641px) {

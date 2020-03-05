@@ -38,12 +38,12 @@ class Character {
     return this.baseAttackPower * attackCount;
   }
 
-  updateYourCharHP(attackCount) {
+  updateYourCharHP(attackCount, defenderCounterAttackPower) {
     if (attackCount > 0) {
-      console.log('this.counterAttackPower:' + this.counterAttackPower);
+      console.log('this.counterAttackPower:' + defenderCounterAttackPower);
       console.log('this.healthPoints1:' + this.healthPoints);
 
-      this.healthPoints -= this.counterAttackPower;
+      this.healthPoints -= defenderCounterAttackPower;
 
       console.log('this.healthPoints2:' + this.healthPoints);
 
@@ -76,10 +76,10 @@ const htmlEl = {
 };
 
 const imgPath = './assets/images/';
-const obiWan = new Character('obiWan', 'Obi-Wan Kenobi', 120, 8, 25, `${imgPath}obi-wan.jpg`);
-const luke = new Character('luke', 'Luke Skywalker', 100, 6, 25, `${imgPath}luke-skywalker.jpg`);
+const obiWan = new Character('obiWan', 'Obi-Wan Kenobi', 120, 8, 15, `${imgPath}obi-wan.jpg`);
+const luke = new Character('luke', 'Luke Skywalker', 100, 6, 12, `${imgPath}luke-skywalker.jpg`);
 const maul = new Character('maul', 'Darth Maul', 180, 10, 25, `${imgPath}darth-maul.jpg`);
-const sidious = new Character('sidious', 'Darth Sidious', 150, 4, 25, `${imgPath}darth-sidious.jpg`);
+const sidious = new Character('sidious', 'Darth Sidious', 150, 4, 10, `${imgPath}darth-sidious.jpg`);
 const charactersArray = [obiWan, luke, maul, sidious];
 
 function createCharPanels() {
@@ -100,6 +100,10 @@ function findCharInstance(id) {
   return charactersArray.find(function(char) {
     return char.returnSelf(id) !== undefined;
   });
+}
+
+function showRestartBtn() {
+  $('#restart').show();
 }
 
 $('document').ready(function() {
@@ -140,6 +144,8 @@ $('document').ready(function() {
     }
 
     defenderChosen = true;
+    console.log('defenderChosen: ' + defenderChosen);
+
     const clickedPanel = $(this);
     defenderId = clickedPanel.attr('id');
     console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
@@ -148,7 +154,12 @@ $('document').ready(function() {
   });
 
   $('#attack').on('click', function() {
-    if (!defenderChosen || gameOver) {
+    if (gameOver) {
+      return;
+    }
+    
+    if (!defenderChosen) {
+      $('#messages .message').text('No defender has been chosen!');
       return;
     }
 
@@ -161,29 +172,36 @@ $('document').ready(function() {
     const yourChar = findCharInstance(yourCharId);
     const yourCharPower = yourChar.updateAttackPower(attackCounter);
     const defenderHP = defender.updateDefenderHP(attackCounter, yourCharPower);
-    const yourCharHP = yourChar.updateYourCharHP(attackCounter);
+    const yourCharHP = yourChar.updateYourCharHP(attackCounter, defender.myCounterAttackPower);
 
     $(`#your-character #${yourCharId} .hp-points`).text(`${yourCharHP}`);
     $(`#defender #${defenderId} .hp-points`).text(`${defenderHP}`);
 
     if (defenderHP > 0 && yourCharHP > 0) {
-      $('#points').html(`<p>You attacked ${defender.myName} for ${yourCharPower} damage.<br>
-        ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.</p>`);
-    } else if (defenderHP > 0 && yourCharHP <0) { // When your Character LOSES.
+      $('#messages .message').text(`You attacked ${defender.myName} for ${yourCharPower} damage.
+        ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.`);
+    } else if (defenderHP > 0 && yourCharHP <= 0) { // When your character LOSES. == Game Over
       gameOver = true;
-      $('#points').html(`<p>You have been defeated...GAME OVER!!!</p>`);
-    } else if (defenderHP < 0 && yourCharHP > 0) { // When your Character WINS.
-      defenderChosen = false;
-      $('#points').html(`<p>You have defeated ${defender.myName}, you can choose to fight another enemy.</p>`);
+      $('#messages .message').text('You have been defeated...GAME OVER!!!');
+      showRestartBtn();
+    } else if (defenderHP <= 0 && yourCharHP > 0) { // When your character WINS.
       $('#defender .character-panel').remove();
-    } else {
-      $('#points').html('<p>It\'s a tie!</p>'); // When the game is a tie.
-    }
+      defenderChosen = false;
 
+      if ($('#enemies .character-panel').length > 0) {  // And when there are still enemies (enemy) left in Enemies section
+        $('#messages .message').text(`You have defeated ${defender.myName}, you can choose to fight another enemy.`);
+      } else {  // And when there is NO enemy left in Enemies section  == Game Over
+        gameOver = true;
+        $('#messages .message').text('You Won!!!! GAME OVER!!!');
+        showRestartBtn();
+      }
+    } else {
+      gameOver = true;
+      $('#messages .message').text('It\'s a tie!'); // When the game is a tie. == Game Over
+      showRestartBtn();
+    }
   });
 
 });
-
-
 
 
