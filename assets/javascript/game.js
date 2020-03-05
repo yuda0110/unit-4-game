@@ -138,13 +138,13 @@ $('document').ready(function() {
   });
 
   $(document).on('click', '#enemies .character-panel', function(){
-    console.log($('#enemies .character-panel'));
     if (defenderChosen) {
       return;
     }
 
     defenderChosen = true;
     console.log('defenderChosen: ' + defenderChosen);
+    $('#messages .message').empty();
 
     const clickedPanel = $(this);
     defenderId = clickedPanel.attr('id');
