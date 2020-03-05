@@ -20,8 +20,20 @@ class Character {
     return this.healthPoints;
   }
 
+  set myHealthPoints(hp) {
+    this.healthPoints = hp;
+  }
+
+  set myBaseAttackPower(power) {
+    this.baseAttackPower = power;
+  }
+
   get myCounterAttackPower() {
     return this.counterAttackPower;
+  }
+
+  set myCounterAttackPower(power) {
+    this.counterAttackPower = power;
   }
 
   get myImage() {
@@ -69,47 +81,70 @@ class Character {
   }
 }
 
-const htmlEl = {
-  yourCharHolder: $('#your-character .character-holder'),
-  enemiesHolder: $('#enemies .character-holder'),
-  defenderHolder: $('#defender .character-holder')
+const initCharState = {
+  obiWan: {
+    hp: 120,
+    baseAttackPower: 8,
+    counterAttackPower: 15
+  },
+  luke: {
+    hp: 100,
+    baseAttackPower: 6,
+    counterAttackPower: 12
+  },
+  maul: {
+    hp: 180,
+    baseAttackPower: 10,
+    counterAttackPower: 25
+  },
+  sidious: {
+    hp: 150,
+    baseAttackPower: 4,
+    counterAttackPower: 10
+  },
 };
-
-const imgPath = './assets/images/';
-const obiWan = new Character('obiWan', 'Obi-Wan Kenobi', 120, 8, 15, `${imgPath}obi-wan.jpg`);
-const luke = new Character('luke', 'Luke Skywalker', 100, 6, 12, `${imgPath}luke-skywalker.jpg`);
-const maul = new Character('maul', 'Darth Maul', 180, 10, 25, `${imgPath}darth-maul.jpg`);
-const sidious = new Character('sidious', 'Darth Sidious', 150, 4, 10, `${imgPath}darth-sidious.jpg`);
-const charactersArray = [obiWan, luke, maul, sidious];
-
-function createCharPanels() {
-  let content = '';
-  charactersArray.forEach(function (char, index) {
-    content += `<div id=${char.myId} class="character-panel">
-      <p>${char.myName}</p>
-      <img src="${char.myImage}" alt="${char.myName}">
-      <p class="hp-points">${char.myHealthPoints}</p>
-      </div>`;
-  });
-  htmlEl.yourCharHolder.html(content);
-}
-
-function findCharInstance(id) {
-  console.log('id: ' + id);
-
-  return charactersArray.find(function(char) {
-    return char.returnSelf(id) !== undefined;
-  });
-}
-
-function showRestartBtn() {
-  $('#restart').show();
-}
 
 
 
 $('document').ready(function() {
-  createCharPanels();
+  const htmlEl = {
+    yourCharHolder: $('#your-character .character-holder'),
+    enemiesHolder: $('#enemies .character-holder'),
+    defenderHolder: $('#defender .character-holder')
+  };
+
+  const imgPath = './assets/images/';
+
+  const obiWan = new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `${imgPath}obi-wan.jpg`);
+  const luke = new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `${imgPath}luke-skywalker.jpg`);
+  const maul = new Character('maul', 'Darth Maul', initCharState.maul.hp, initCharState.maul.baseAttackPower, initCharState.maul.counterAttackPower, `${imgPath}darth-maul.jpg`);
+  const sidious = new Character('sidious', 'Darth Sidious', initCharState.sidious.hp, initCharState.sidious.baseAttackPower, initCharState.sidious.counterAttackPower, `${imgPath}darth-sidious.jpg`);
+  const charactersArray = [obiWan, luke, maul, sidious];
+  let gameState = gameStateFactory();
+
+  function createCharPanels() {
+    let content = '';
+    charactersArray.forEach(function (char, index) {
+      content += `<div id=${char.myId} class="character-panel">
+      <p>${char.myName}</p>
+      <img src="${char.myImage}" alt="${char.myName}">
+      <p class="hp-points">${char.myHealthPoints}</p>
+      </div>`;
+    });
+    htmlEl.yourCharHolder.html(content);
+  }
+
+  function findCharInstance(id) {
+    console.log('id: ' + id);
+
+    return charactersArray.find(function(char) {
+      return char.returnSelf(id) !== undefined;
+    });
+  }
+
+  function showRestartBtn() {
+    $('#restart').show();
+  }
 
   function gameStateFactory() {
     return {
@@ -122,10 +157,28 @@ $('document').ready(function() {
     }
   }
 
-  let gameState = gameStateFactory();
+  function resetGame() {
+    obiWan.myHealthPoints = initCharState.obiWan.hp;
+    obiWan.myBaseAttackPower = initCharState.obiWan.baseAttackPower;
+    obiWan.myCounterAttackPower = initCharState.obiWan.counterAttackPower;
+    luke.myHealthPoints = initCharState.luke.hp;
+    luke.myBaseAttackPower = initCharState.luke.baseAttackPower;
+    luke.myCounterAttackPower = initCharState.luke.counterAttackPower;
+    maul.myHealthPoints = initCharState.maul.hp;
+    maul.myBaseAttackPower = initCharState.maul.baseAttackPower;
+    maul.myCounterAttackPower = initCharState.maul.counterAttackPower;
+    sidious.myHealthPoints = initCharState.sidious.hp;
+    sidious.myBaseAttackPower = initCharState.sidious.baseAttackPower;
+    sidious.myCounterAttackPower = initCharState.sidious.counterAttackPower;
+
+    gameState = gameStateFactory();
+
+    createCharPanels();
+  }
+
+  resetGame();
 
   const yourCharPanels = $('#your-character .character-panel');
-
 
   yourCharPanels.on('click', function() {
     if (gameState.enemiesChosen) {
@@ -219,6 +272,7 @@ $('document').ready(function() {
 
   $(document).on('click', '#restart', function(){
     console.log('restart clicked!');
+    resetGame();
   });
 
 });
