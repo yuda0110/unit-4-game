@@ -106,100 +106,119 @@ function showRestartBtn() {
   $('#restart').show();
 }
 
-$('document').ready(function() {
 
+
+$('document').ready(function() {
   createCharPanels();
 
-  let enemiesChosen = false;
-  let defenderChosen = false;
-  let gameOver = false;
-  let yourCharId = '';
-  let defenderId = '';
-  let attackCounter = 0;
+  function gameStateFactory() {
+    return {
+      enemiesChosen: false,
+      defenderChosen: false,
+      gameOver: false,
+      yourCharId: '',
+      defenderId: '',
+      attackCounter: 0
+    }
+  }
+
+  let gameState = gameStateFactory();
 
   const yourCharPanels = $('#your-character .character-panel');
 
+
   yourCharPanels.on('click', function() {
-    if (enemiesChosen) {
+    if (gameState.enemiesChosen) {
       return;
     }
 
-    enemiesChosen = true;
+    gameState.enemiesChosen = true;
     const clickedPanel = $(this);
-    yourCharId = clickedPanel.attr('id');
-    console.log('clickedPanel: ' + yourCharId);
+    gameState.yourCharId = clickedPanel.attr('id');
+    console.log('clickedPanel: ' + gameState.yourCharId);
+
     yourCharPanels.each(function (index) {
       console.log('id: ' + $(this).attr('id'));
-      if (yourCharId !== $(this).attr('id')) {
+      if (gameState.yourCharId !== $(this).attr('id')) {
         $(this).remove();
         htmlEl.enemiesHolder.append($(this))
       }
     });
   });
 
+
+
   $(document).on('click', '#enemies .character-panel', function(){
-    if (defenderChosen) {
+    if (gameState.defenderChosen) {
       return;
     }
 
-    defenderChosen = true;
-    console.log('defenderChosen: ' + defenderChosen);
+    gameState.defenderChosen = true;
+    console.log('gameState.defenderChosen: ' + gameState.defenderChosen);
     $('#messages .message').empty();
 
     const clickedPanel = $(this);
-    defenderId = clickedPanel.attr('id');
+    gameState.defenderId = clickedPanel.attr('id');
     console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
     clickedPanel.remove();
     htmlEl.defenderHolder.append(clickedPanel);
   });
 
+
+
   $('#attack').on('click', function() {
-    if (gameOver) {
+    if (gameState.gameOver) {
       return;
     }
     
-    if (!defenderChosen) {
+    if (!gameState.defenderChosen) {
       $('#messages .message').text('No defender has been chosen!');
       return;
     }
 
-    console.log('defenderID: ' + defenderId);
-    console.log('yourCharID: ' + yourCharId);
-    attackCounter += 1;
-    console.log('attackCount: ' + attackCounter);
+    console.log('defenderID: ' + gameState.defenderId);
+    console.log('yourCharID: ' + gameState.yourCharId);
+    gameState.attackCounter += 1;
+    console.log('attackCount: ' + gameState.attackCounter);
 
-    const defender = findCharInstance(defenderId);
-    const yourChar = findCharInstance(yourCharId);
-    const yourCharPower = yourChar.updateAttackPower(attackCounter);
-    const defenderHP = defender.updateDefenderHP(attackCounter, yourCharPower);
-    const yourCharHP = yourChar.updateYourCharHP(attackCounter, defender.myCounterAttackPower);
+    const defender = findCharInstance(gameState.defenderId);
+    const yourChar = findCharInstance(gameState.yourCharId);
+    const yourCharPower = yourChar.updateAttackPower(gameState.attackCounter);
+    const defenderHP = defender.updateDefenderHP(gameState.attackCounter, yourCharPower);
+    const yourCharHP = yourChar.updateYourCharHP(gameState.attackCounter, defender.myCounterAttackPower);
 
-    $(`#your-character #${yourCharId} .hp-points`).text(`${yourCharHP}`);
-    $(`#defender #${defenderId} .hp-points`).text(`${defenderHP}`);
+    $(`#your-character #${gameState.yourCharId} .hp-points`).text(`${yourCharHP}`);
+    $(`#defender #${gameState.defenderId} .hp-points`).text(`${defenderHP}`);
 
     if (defenderHP > 0 && yourCharHP > 0) {
       $('#messages .message').text(`You attacked ${defender.myName} for ${yourCharPower} damage.
         ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.`);
     } else if (defenderHP > 0 && yourCharHP <= 0) { // When your character LOSES. == Game Over
-      gameOver = true;
+      gameState.gameOver = true;
       $('#messages .message').text('You have been defeated...GAME OVER!!!');
       showRestartBtn();
     } else if (defenderHP <= 0 && yourCharHP > 0) { // When your character WINS.
       $('#defender .character-panel').remove();
-      defenderChosen = false;
+      gameState.defenderChosen = false;
 
       if ($('#enemies .character-panel').length > 0) {  // And when there are still enemies (enemy) left in Enemies section
         $('#messages .message').text(`You have defeated ${defender.myName}, you can choose to fight another enemy.`);
       } else {  // And when there is NO enemy left in Enemies section  == Game Over
-        gameOver = true;
+        gameState.gameOver = true;
         $('#messages .message').text('You Won!!!! GAME OVER!!!');
         showRestartBtn();
       }
     } else {
-      gameOver = true;
+      gameState.gameOver = true;
       $('#messages .message').text('It\'s a tie!'); // When the game is a tie. == Game Over
       showRestartBtn();
     }
+  });
+
+
+
+  $(document).on('click', '#restart', function(){
+    console.log('restart clicked!');
   });
 
 });
