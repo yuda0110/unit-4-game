@@ -1,11 +1,14 @@
 /* ========== VARIABLES ========== */
 :root {
     --color-red: #cb1214;
-    --color-red-light: #f5494c;
+    --color-red-light1: #f5494c;
+    --color-red-light2: #ff8084;
     --color-blue: #1259b5;
-    --color-blue-light: #4898ff;
+    --color-blue-light1: #4898ff;
+    --color-blue-light2: #b3e6ff;
     --color-white: #fff;
     --color-black: #090909;
+    --color-grey1: #272727;
 
     --font-heading: 'Orbitron', sans-serif;
     --font-default: 'Lato', sans-serif;
@@ -94,6 +97,32 @@ section {
     display: block;
 }
 
+#your-character .character-panel {
+    background-color: var(--color-white);
+}
+
+#your-character .character-panel:hover {
+    background-color: var(--color-blue-light2);
+}
+
+#enemies .character-panel {
+    background-color: var(--color-red-light2);
+    color: var(--color-black);
+}
+
+#enemies .character-panel:hover {
+    background-color: var(--color-red-light1);
+}
+
+#defender .character-panel {
+    background-color: var(--color-black);
+    color: var(--color-white);
+}
+
+#defender .character-panel:hover {
+    background-color: var(--color-grey1);
+}
+
 .btn {
     margin-top: .5rem;
     padding: .5rem 1rem;
@@ -110,7 +139,7 @@ section {
 
 .btn-attack:hover,
 .btn-attack:focus {
-    background-color: var(--color-red-light);
+    background-color: var(--color-red-light1);
 }
 
 .btn-restart {
@@ -120,7 +149,7 @@ section {
 
 .btn-restart:hover,
 .btn-restart:focus {
-    background-color: var(--color-blue-light);
+    background-color: var(--color-blue-light1);
 }
 
 @media screen and (min-width: 641px) {
