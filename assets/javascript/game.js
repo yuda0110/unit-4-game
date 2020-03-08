@@ -120,7 +120,7 @@ $('document').ready(function () {
 
     charactersArray: null,
 
-    // this.imgPath is not working!!
+    // ??? --- this.imgPath is not working!!
     characters: {
       obiWan: new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `./assets/images/obi-wan.jpg`),
       luke: new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `./assets/images/luke-skywalker.jpg`),
@@ -175,7 +175,13 @@ $('document').ready(function () {
 
     resetGame: function () {
       this.createCharactersArray();
+      this.resetCharState();
+      this.gameState = this.gameStateFactory();
+      this.createCharPanels();
+      this.resetHtml();
+    },
 
+    resetCharState: function () {
       this.characters.obiWan.myHealthPoints = initCharState.obiWan.hp;
       this.characters.obiWan.myBaseAttackPower = initCharState.obiWan.baseAttackPower;
       this.characters.obiWan.myCounterAttackPower = initCharState.obiWan.counterAttackPower;
@@ -188,11 +194,9 @@ $('document').ready(function () {
       this.characters.sidious.myHealthPoints = initCharState.sidious.hp;
       this.characters.sidious.myBaseAttackPower = initCharState.sidious.baseAttackPower;
       this.characters.sidious.myCounterAttackPower = initCharState.sidious.counterAttackPower;
+    },
 
-      this.gameState = this.gameStateFactory();
-
-      this.createCharPanels();
-
+    resetHtml: function () {
       $('#enemies .character-holder').empty();
       $('#defender .character-holder').empty();
       $('#messages .message').empty();
