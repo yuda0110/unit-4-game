@@ -114,15 +114,18 @@ $('document').ready(function () {
   };
 
   const gameSW = {
-    imgPath: './assets/images/',
-    charactersArray: this.createCharactersArray(),
+    imgPath: 'assets/images/',
+
     gameState: null,
 
+    charactersArray: null,
+
+    // this.imgPath is not working!!
     characters: {
-      obiWan: new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `${this.imgPath}obi-wan.jpg`),
-      luke: new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `${this.imgPath}luke-skywalker.jpg`),
-      maul: new Character('maul', 'Darth Maul', initCharState.maul.hp, initCharState.maul.baseAttackPower, initCharState.maul.counterAttackPower, `${this.imgPath}darth-maul.jpg`),
-      sidious: new Character('sidious', 'Darth Sidious', initCharState.sidious.hp, initCharState.sidious.baseAttackPower, initCharState.sidious.counterAttackPower, `${this.imgPath}darth-sidious.jpg`)
+      obiWan: new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `./assets/images/obi-wan.jpg`),
+      luke: new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `./assets/images/luke-skywalker.jpg`),
+      maul: new Character('maul', 'Darth Maul', initCharState.maul.hp, initCharState.maul.baseAttackPower, initCharState.maul.counterAttackPower, `./assets/images/darth-maul.jpg`),
+      sidious: new Character('sidious', 'Darth Sidious', initCharState.sidious.hp, initCharState.sidious.baseAttackPower, initCharState.sidious.counterAttackPower, `./assets/images/darth-sidious.jpg`)
     },
 
     createCharactersArray: function () {
@@ -130,10 +133,11 @@ $('document').ready(function () {
       for (const charProperty in this.characters) {
         charArr.push(this.characters[charProperty]);
       }
-      return charArr;
+      this.charactersArray = charArr;
     },
 
     initGame: function () {
+      this.createCharactersArray();
       this.gameState = this.gameStateFactory();
       this.createCharPanels();
     },
@@ -174,6 +178,8 @@ $('document').ready(function () {
     },
 
     resetGame: function () {
+      this.createCharactersArray();
+
       this.characters.obiWan.myHealthPoints = initCharState.obiWan.hp;
       this.characters.obiWan.myBaseAttackPower = initCharState.obiWan.baseAttackPower;
       this.characters.obiWan.myCounterAttackPower = initCharState.obiWan.counterAttackPower;
@@ -201,18 +207,18 @@ $('document').ready(function () {
   gameSW.resetGame();
 
   $(document).on('click', '#your-character .character-panel', function(){
-    if (gameState.enemiesChosen) {
+    if (gameSW.gameState.enemiesChosen) {
       return;
     }
 
-    gameState.enemiesChosen = true;
+    gameSW.gameState.enemiesChosen = true;
     const clickedPanel = $(this);
-    gameState.yourCharId = clickedPanel.attr('id');
-    console.log('clickedPanel: ' + gameState.yourCharId);
+    gameSW.gameState.yourCharId = clickedPanel.attr('id');
+    console.log('clickedPanel: ' + gameSW.gameState.yourCharId);
 
     $('#your-character .character-panel').each(function (index) {
       console.log('id: ' + $(this).attr('id'));
-      if (gameState.yourCharId !== $(this).attr('id')) {
+      if (gameSW.gameState.yourCharId !== $(this).attr('id')) {
         $(this).remove();
         htmlEl.enemiesHolder.append($(this))
       }
@@ -222,16 +228,16 @@ $('document').ready(function () {
 
 
   $(document).on('click', '#enemies .character-panel', function(){
-    if (gameState.defenderChosen) {
+    if (gameSW.gameState.defenderChosen) {
       return;
     }
 
-    gameState.defenderChosen = true;
-    console.log('gameState.defenderChosen: ' + gameState.defenderChosen);
+    gameSW.gameState.defenderChosen = true;
+    console.log('gameSW.gameState.defenderChosen: ' + gameSW.gameState.defenderChosen);
     $('#messages .message').empty();
 
     const clickedPanel = $(this);
-    gameState.defenderId = clickedPanel.attr('id');
+    gameSW.gameState.defenderId = clickedPanel.attr('id');
     console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
     clickedPanel.remove();
     htmlEl.defenderHolder.append(clickedPanel);
@@ -240,48 +246,48 @@ $('document').ready(function () {
 
 
   $('#attack').on('click', function() {
-    if (gameState.gameOver) {
+    if (gameSW.gameState.gameOver) {
       return;
     }
     
-    if (!gameState.defenderChosen) {
+    if (!gameSW.gameState.defenderChosen) {
       $('#messages .message').text('No defender has been chosen!');
       return;
     }
 
-    gameState.attackCounter += 1;
+    gameSW.gameState.attackCounter += 1;
 
-    const defender = findCharInstance(gameState.defenderId);
-    const yourChar = findCharInstance(gameState.yourCharId);
-    const yourCharPower = yourChar.updateAttackPower(gameState.attackCounter);
-    const defenderHP = defender.updateDefenderHP(gameState.attackCounter, yourCharPower);
-    const yourCharHP = yourChar.updateYourCharHP(gameState.attackCounter, defender.myCounterAttackPower);
+    const defender = gameSW.findCharInstance(gameSW.gameState.defenderId);
+    const yourChar = gameSW.findCharInstance(gameSW.gameState.yourCharId);
+    const yourCharPower = yourChar.updateAttackPower(gameSW.gameState.attackCounter);
+    const defenderHP = defender.updateDefenderHP(gameSW.gameState.attackCounter, yourCharPower);
+    const yourCharHP = yourChar.updateYourCharHP(gameSW.gameState.attackCounter, defender.myCounterAttackPower);
 
-    $(`#your-character #${gameState.yourCharId} .hp-points`).text(`${yourCharHP}`);
-    $(`#defender #${gameState.defenderId} .hp-points`).text(`${defenderHP}`);
+    $(`#your-character #${gameSW.gameState.yourCharId} .hp-points`).text(`${yourCharHP}`);
+    $(`#defender #${gameSW.gameState.defenderId} .hp-points`).text(`${defenderHP}`);
 
     if (defenderHP > 0 && yourCharHP > 0) {
       $('#messages .message').text(`You attacked ${defender.myName} for ${yourCharPower} damage.
         ${defender.myName} attacked you back for ${defender.myCounterAttackPower} damage.`);
     } else if (defenderHP > 0 && yourCharHP <= 0) { // When your character LOSES. == Game Over
-      gameState.gameOver = true;
+      gameSW.gameState.gameOver = true;
       $('#messages .message').text('You have been defeated...GAME OVER!!!');
-      showRestartBtn();
+      gameSW.showRestartBtn();
     } else if (defenderHP <= 0 && yourCharHP > 0) { // When your character WINS.
       $('#defender .character-panel').remove();
-      gameState.defenderChosen = false;
+      gameSW.gameState.defenderChosen = false;
 
       if ($('#enemies .character-panel').length > 0) {  // And when there are still enemies (enemy) left in Enemies section
         $('#messages .message').text(`You have defeated ${defender.myName}, you can choose to fight another enemy.`);
       } else {  // And when there is NO enemy left in Enemies section  == Game Over
-        gameState.gameOver = true;
+        gameSW.gameState.gameOver = true;
         $('#messages .message').text('You Won!!!! GAME OVER!!!');
-        showRestartBtn();
+        gameSW.showRestartBtn();
       }
     } else {
-      gameState.gameOver = true;
+      gameSW.gameState.gameOver = true;
       $('#messages .message').text('It\'s a tie!'); // When the game is a tie. == Game Over
-      showRestartBtn();
+      gameSW.showRestartBtn();
     }
   });
 
@@ -289,7 +295,7 @@ $('document').ready(function () {
 
   $(document).on('click', '#restart', function(){
     console.log('restart clicked!');
-    resetGame();
+    gameSW.resetGame();
   });
 
 });
