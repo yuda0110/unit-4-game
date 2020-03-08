@@ -113,19 +113,18 @@ $('document').ready(function () {
     defenderHolder: $('#defender .character-holder')
   };
 
-  const gameSW = {
-    imgPath: 'assets/images/',
+  const imgPath = './assets/images/';
 
+  const gameSW = {
     gameState: null,
 
     charactersArray: null,
 
-    // ??? --- this.imgPath is not working!!
     characters: {
-      obiWan: new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `./assets/images/obi-wan.jpg`),
-      luke: new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `./assets/images/luke-skywalker.jpg`),
-      maul: new Character('maul', 'Darth Maul', initCharState.maul.hp, initCharState.maul.baseAttackPower, initCharState.maul.counterAttackPower, `./assets/images/darth-maul.jpg`),
-      sidious: new Character('sidious', 'Darth Sidious', initCharState.sidious.hp, initCharState.sidious.baseAttackPower, initCharState.sidious.counterAttackPower, `./assets/images/darth-sidious.jpg`)
+      obiWan: new Character('obiWan', 'Obi-Wan Kenobi', initCharState.obiWan.hp, initCharState.obiWan.baseAttackPower, initCharState.obiWan.counterAttackPower, `${imgPath}obi-wan.jpg`),
+      luke: new Character('luke', 'Luke Skywalker', initCharState.luke.hp, initCharState.luke.baseAttackPower, initCharState.luke.counterAttackPower, `${imgPath}luke-skywalker.jpg`),
+      maul: new Character('maul', 'Darth Maul', initCharState.maul.hp, initCharState.maul.baseAttackPower, initCharState.maul.counterAttackPower, `${imgPath}darth-maul.jpg`),
+      sidious: new Character('sidious', 'Darth Sidious', initCharState.sidious.hp, initCharState.sidious.baseAttackPower, initCharState.sidious.counterAttackPower, `${imgPath}darth-sidious.jpg`)
     },
 
     createCharactersArray: function () {
@@ -135,7 +134,6 @@ $('document').ready(function () {
       }
       this.charactersArray = charArr;
     },
-
 
     createCharPanels: function () {
       let content = '';
