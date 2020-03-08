@@ -52,13 +52,7 @@ class Character {
 
   updateYourCharHP(attackCount, defenderCounterAttackPower) {
     if (attackCount > 0) {
-      console.log('this.counterAttackPower:' + defenderCounterAttackPower);
-      console.log('this.healthPoints1:' + this.healthPoints);
-
       this.healthPoints -= defenderCounterAttackPower;
-
-      console.log('this.healthPoints2:' + this.healthPoints);
-
       return this.healthPoints;
     } else {
       return this.healthPoints;
@@ -67,13 +61,7 @@ class Character {
 
   updateDefenderHP(attackCount, yourCharPower) {
     if (attackCount > 0) {
-      console.log('yourCharPower:' + yourCharPower);
-      console.log('defender healthPoints1:' + this.healthPoints);
-
       this.healthPoints -= yourCharPower;
-
-      console.log('defender healthPoints2:' + this.healthPoints);
-
       return this.healthPoints;
     } else {
       return this.healthPoints;
@@ -148,8 +136,6 @@ $('document').ready(function () {
     },
 
     findCharInstance: function (id) {
-      console.log('id: ' + id);
-
       return this.charactersArray.find(function (char) {
         return char.returnSelf(id) !== undefined;
       });
@@ -203,7 +189,6 @@ $('document').ready(function () {
   };
 
   if (!gameSW.gameState){
-    console.log('gameState: ' + gameSW.gameState);
     gameSW.resetGame();
   }
 
@@ -215,10 +200,8 @@ $('document').ready(function () {
     gameSW.gameState.enemiesChosen = true;
     const clickedPanel = $(this);
     gameSW.gameState.yourCharId = clickedPanel.attr('id');
-    console.log('clickedPanel: ' + gameSW.gameState.yourCharId);
 
     $('#your-character .character-panel').each(function (index) {
-      console.log('id: ' + $(this).attr('id'));
       if (gameSW.gameState.yourCharId !== $(this).attr('id')) {
         $(this).remove();
         htmlEl.enemiesHolder.append($(this))
@@ -234,12 +217,10 @@ $('document').ready(function () {
     }
 
     gameSW.gameState.defenderChosen = true;
-    console.log('gameSW.gameState.defenderChosen: ' + gameSW.gameState.defenderChosen);
     $('#messages .message').empty();
 
     const clickedPanel = $(this);
     gameSW.gameState.defenderId = clickedPanel.attr('id');
-    console.log('enemy clickedPanel: ' + clickedPanel.attr('id'));
     clickedPanel.remove();
     htmlEl.defenderHolder.append(clickedPanel);
   });
@@ -295,7 +276,6 @@ $('document').ready(function () {
 
 
   $(document).on('click', '#restart', function(){
-    console.log('restart clicked!');
     gameSW.gameState.gameReset = true;
     gameSW.resetGame();
   });
