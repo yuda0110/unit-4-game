@@ -136,11 +136,6 @@ $('document').ready(function () {
       this.charactersArray = charArr;
     },
 
-    initGame: function () {
-      this.createCharactersArray();
-      this.gameState = this.gameStateFactory();
-      this.createCharPanels();
-    },
 
     createCharPanels: function () {
       let content = '';
