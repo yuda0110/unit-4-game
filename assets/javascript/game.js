@@ -173,7 +173,8 @@ $('document').ready(function () {
         gameOver: false,
         yourCharId: '',
         defenderId: '',
-        attackCounter: 0
+        attackCounter: 0,
+        gameReset: false
       }
     },
 
@@ -204,7 +205,10 @@ $('document').ready(function () {
     }
   };
 
-  gameSW.resetGame();
+  if (!gameSW.gameState){
+    console.log('gameState: ' + gameSW.gameState);
+    gameSW.resetGame();
+  }
 
   $(document).on('click', '#your-character .character-panel', function(){
     if (gameSW.gameState.enemiesChosen) {
@@ -295,6 +299,7 @@ $('document').ready(function () {
 
   $(document).on('click', '#restart', function(){
     console.log('restart clicked!');
+    gameSW.gameState.gameReset = true;
     gameSW.resetGame();
   });
 
